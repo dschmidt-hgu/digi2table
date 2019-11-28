@@ -26,13 +26,13 @@ usePackage("data.table")
 usePackage("rgl")		
 usePackage("rglwidget")
 usePackage("ggplot2")		
-usePackage("cowplot")	
-usePackage("ggthemes")	
+# usePackage("cowplot")	
+# usePackage("ggthemes")	
 usePackage("stringi")
 usePackage("RColorBrewer")
-usePackage("GGally") #devtools::install_github("ggobi/ggally#266")
-usePackage("geomorph") 
-usePackage("pracma") 
+# usePackage("GGally") #devtools::install_github("ggobi/ggally#266")
+# usePackage("geomorph") 
+# usePackage("pracma") 
 
 ##############################################################################
 
