@@ -306,12 +306,14 @@ f.dPlantCoords <- function(flistID){
 
 		#Create unique Organ Identifier [for grouping of coordinates]
 		leaf.Coords[,"organ_N":= rep(paste0("Leaf_",IDValsTable[Type=="//Leaf"]$Main,"_",IDValsTable[Type=="//Leaf"]$Sub,"_",IDValsTable[Type=="//Leaf"]$SubSub),dfL$p)] #Repeat Id x Number of Points
-	
+		
+	}
+ 
 
+	#Flower coordinates
+	flowerLinesStart <-  (which(d$f == "//Flower")) + 3
 
-		#Flowers 
-		flowerLinesStart <-  (which(d$f == "//Flower")) + 3
-		if(length(flowerLinesStart)>0) #check for flowers
+	if(length(flowerLinesStart)>0) #check for flowers
 		{
 			flowerLines <- c(flowerLinesStart,flowerLinesStart+1,flowerLinesStart+2)
 			flowerLines <- flowerLines[order(flowerLines)]
@@ -325,7 +327,7 @@ f.dPlantCoords <- function(flistID){
 			#Create Organ Identifier [for grouping of coordinates] -- #repeat 3 times as flower has 3 points
 			flower.Coords[,"organ_N":= rep(paste0("Flower_",IDValsTable[Type=="//Flower"]$Main,"_",IDValsTable[Type=="//Flower"]$Sub,"_",IDValsTable[Type=="//Flower"]$SubSub),each=3)] 
 
-			#Correct IDs for multiple Flowers at the same node
+			#Correct IDs for multiple Flowers at the same node | reorder first to match "table" order
 			singleFlowers <-  unique(flower.Coords$organ_N)[order(unique(flower.Coords$organ_N))][as.vector(table(flower.Coords$organ_N)==3)]
 			multipleFlowers <- unique(flower.Coords$organ_N)[order(unique(flower.Coords$organ_N))][as.vector(table(flower.Coords$organ_N)!=3)]
 			NFormulitpleFlowers <- as.vector(table(flower.Coords$organ_N))[as.vector(table(flower.Coords$organ_N)!=3)]/3
@@ -342,9 +344,7 @@ f.dPlantCoords <- function(flistID){
 					flower.Coords[organ_N%in%multipleFlowers[i], "organ_N_unique":= rep(paste0(unique(organ_N),"_",1:n),each=3) ]
 				}
 			}
-			
 		}
-	} #if no leaves then no flowers
 
 
 	#Add "Organ Type" to Coordinate Data Frames
@@ -359,8 +359,11 @@ f.dPlantCoords <- function(flistID){
 	#rm(listOfCoordsDF)
 	listOfCoordsDF <- as.list(ls()[grep(ls(),pattern=".Coords")])
 
+
+
+
 	#Merge Data Frames into a single Plant Coords Data Frame
-	dPlantCoords <- rbindlist(lapply(listOfCoordsDF,get),fill=TRUE)
+	dPlantCoords <- rbindlist(lapply(listOfCoordsDF,dynGet),fill=TRUE) #dynGet instead of "get" as it is enclosed in a function and called from a list (i.e. 2 encl. environments)
 
 	# if(sum(!is.na(IDValsTable$subsub.nodeLines))!=0)
 	# {
@@ -561,11 +564,10 @@ allPlant <- rbindlist(lapply(flist,f.dPlantCoords),fill=TRUE)
 plotRGL <- function(flistID){
 #rgl.close()
 
+#Get Plant Coordinates
 dPlantCoords <- f.dPlantCoords(flistID)
-#dPlantCoords <- f.dPlantCoords.filled(flistID)
 
-
-#Splitback for Plotting
+#Splitback for efficient lotting
 leaf.Coords <- dPlantCoords[oType=="Leaf"]
 flower.Coords <- dPlantCoords[oType=="Flower"]
 main.node.Coords <- dPlantCoords[oType=="main.Node"]
@@ -577,268 +579,295 @@ subsub.node.Coords <- dPlantCoords[oType=="subsub.Node"]
 #PREPARE LEAF MATRIX
 # Blätter
 if(nrow(leaf.Coords)!=0)
-{
-#Idenfitfy Numbers of Points
-fullL <-  unique(leaf.Coords$organ_N)[order(unique(leaf.Coords$organ_N))][as.vector(table(leaf.Coords$organ_N)==18)]
-medL <-  unique(leaf.Coords$organ_N)[order(unique(leaf.Coords$organ_N))][as.vector(table(leaf.Coords$organ_N)==9)]
-smallL <-  unique(leaf.Coords$organ_N)[order(unique(leaf.Coords$organ_N))][as.vector(table(leaf.Coords$organ_N)==6)]
-
-#Preare Triangle MAtrix
-for(i in smallL)
 	{
-	# Init 
-	TriDF <- Tri5
-	np <- nrow(leaf.Coords[organ_N==i])
-	listL <- smallL
-	###
-	
-	
-	Pet  <- leaf.Coords[organ_N==i][1:2,1:3]
-	Leaf <-  leaf.Coords[organ_N==i][2:np,1:3]			#2:Number of points
-
-		for(j in 1:nrow(TriDF))							#Triangulation
-			{
-				tri.Points <- TriDF[j,]
-				
-				if(j == 1 & i == listL[1]){				#First in SmallL		
-						mTriX <-	matrix(	
-								c(	Leaf$x[tri.Points],
-									Leaf$y[tri.Points],
-									Leaf$z[tri.Points])
-								,byrow=FALSE,ncol=3)
-				}else{
-					mTriX <-	rbind(mTriX,matrix(	
-								c(	Leaf$x[tri.Points],
-									Leaf$y[tri.Points],
-									Leaf$z[tri.Points])
-								,byrow=FALSE,ncol=3)	
-								)
-					}	
-			}
+	#Idenfitfy Numbers of Points | re-order to match automatic ordering of "table"
+	fullL <-  	unique(leaf.Coords$organ_N)[order(unique(leaf.Coords$organ_N))][as.vector(table(leaf.Coords$organ_N)==18)]
+	medL <-  	unique(leaf.Coords$organ_N)[order(unique(leaf.Coords$organ_N))][as.vector(table(leaf.Coords$organ_N)==9)]
+	smallL <-  	unique(leaf.Coords$organ_N)[order(unique(leaf.Coords$organ_N))][as.vector(table(leaf.Coords$organ_N)==6)]
 
 
-		#Petioles
-		if(i == listL[1]){ 	mPetX <- Pet[,1:3]  				#First in SmallL		
-		}else{ mPetX <- rbind(mPetX,Pet[,1:3])	}
-		#segments3d(Pet[,1:3],		col=col.pet,		lwd=4)
+	#Prepare Triangle Matrix
+	for(i in smallL)
+		{
+			# Init 
+			TriDF <- Tri5
+			np <- nrow(leaf.Coords[organ_N==i])
+			listL <- smallL
+			###	
+			
+			Pet  <- leaf.Coords[organ_N==i][1:2,1:3]
+			Leaf <-  leaf.Coords[organ_N==i][2:np,1:3]			#2:Number of points
 
-	}
-##########################
-for(i in medL)
-	{
-	# Init 
-	TriDF <- Tri9
-	np <- nrow(leaf.Coords[organ_N==i])
-	listL <- medL
-	###
-	
-	
-	Pet  <- leaf.Coords[organ_N==i][1:2,1:3]
-	Leaf <-  leaf.Coords[organ_N==i][2:np,1:3]			#2:Number of points
-
-		for(j in 1:nrow(TriDF))							#Triangulation
-			{
-				tri.Points <- TriDF[j,]
-				
-#				if(j == 1 & i == listL[1]){				#First in SmallL		
-#						mTriX <-	matrix(	
-#								c(	Leaf$x[tri.Points],
-#									Leaf$y[tri.Points],
-#									Leaf$z[tri.Points])
-#								,byrow=FALSE,ncol=3)
-#				}else{
-					mTriX <-	rbind(mTriX,matrix(	
-								c(	Leaf$x[tri.Points],
-									Leaf$y[tri.Points],
-									Leaf$z[tri.Points])
-								,byrow=FALSE,ncol=3)	
-								)
-#					}	
-			}
+				for(j in 1:nrow(TriDF))							#Triangulation
+					{
+						tri.Points <- TriDF[j,]
+						
+							if(exists("mTriX")==FALSE){				#CheckExistence		
+									mTriX <-	matrix(	
+											c(	Leaf$x[tri.Points],
+												Leaf$y[tri.Points],
+												Leaf$z[tri.Points])
+											,byrow=FALSE,ncol=3)
+							}else{			
+									mTriX <-	rbind(mTriX,matrix(	
+												c(	Leaf$x[tri.Points],
+													Leaf$y[tri.Points],
+													Leaf$z[tri.Points])
+												,byrow=FALSE,ncol=3)	
+												)
+							}	
+					}
 
 
-		#Petioles
-		#if(i == listL[1]){ 	mPetX <- Pet[,1:3]  				#First in SmallL		
-		#}else{ 
-		mPetX <- rbind(mPetX,Pet[,1:3])	
-		#}
-		#segments3d(Pet[,1:3],		col=col.pet,		lwd=4)
+				#Petioles
+				if(exists("mPetX")==FALSE){ 
+				mPetX <- Pet[,1:3]  				#First in SmallL		
+				}else{ 
+				mPetX <- rbind(mPetX,Pet[,1:3])	
+				}
 
-	}
-	
-#FULL
-for(i in fullL)
-	{
-	# Init 
-	TriDF <- Tri17
-	np <- nrow(leaf.Coords[organ_N==i])
-	listL <- fullL
-	###
-	
-	
-	Pet  <- leaf.Coords[organ_N==i][1:2,1:3]
-	Leaf <-  leaf.Coords[organ_N==i][2:np,1:3]			#2:Number of points
-
-		for(j in 1:nrow(TriDF))							#Triangulation
-			{
-				tri.Points <- TriDF[j,]
-				
-					if(exists("mTriX")==FALSE){				#CheckExistance		
-							mTriX <-	matrix(	
-									c(	Leaf$x[tri.Points],
-										Leaf$y[tri.Points],
-										Leaf$z[tri.Points])
-									,byrow=FALSE,ncol=3)
-					}else{			
-							mTriX <-	rbind(mTriX,matrix(	
-										c(	Leaf$x[tri.Points],
-											Leaf$y[tri.Points],
-											Leaf$z[tri.Points])
-										,byrow=FALSE,ncol=3)	
-										)
-					}	
-			}
-
-
-		#Petioles
-		if(exists("mPetX")==FALSE){ 
-		mPetX <- Pet[,1:3]  				#First in SmallL		
-		}else{ 
-		mPetX <- rbind(mPetX,Pet[,1:3])	
 		}
-		#segments3d(Pet[,1:3],		col=col.pet,		lwd=4)
+	##########################
+	for(i in medL)
+		{
+			# Init 
+			TriDF <- Tri9
+			np <- nrow(leaf.Coords[organ_N==i])
+			listL <- medL
+			###
+			
+			
+			Pet  <- leaf.Coords[organ_N==i][1:2,1:3]
+			Leaf <-  leaf.Coords[organ_N==i][2:np,1:3]			#2:Number of points
 
-	}
-}
+				for(j in 1:nrow(TriDF))							#Triangulation
+					{
+						tri.Points <- TriDF[j,]
+						
+							if(exists("mTriX")==FALSE){				#CheckExistence		
+									mTriX <-	matrix(	
+											c(	Leaf$x[tri.Points],
+												Leaf$y[tri.Points],
+												Leaf$z[tri.Points])
+											,byrow=FALSE,ncol=3)
+							}else{			
+									mTriX <-	rbind(mTriX,matrix(	
+												c(	Leaf$x[tri.Points],
+													Leaf$y[tri.Points],
+													Leaf$z[tri.Points])
+												,byrow=FALSE,ncol=3)	
+												)
+							}	
+					}
+
+
+				#Petioles
+				if(exists("mPetX")==FALSE){ 
+				mPetX <- Pet[,1:3]  				#First in SmallL		
+				}else{ 
+				mPetX <- rbind(mPetX,Pet[,1:3])	
+				}
+				#segments3d(Pet[,1:3],		col=col.pet,		lwd=4)
+
+		}
+		
+	#FULL
+	for(i in fullL)
+			{
+			# Init 
+			TriDF <- Tri17
+			np <- nrow(leaf.Coords[organ_N==i])
+			listL <- fullL
+			###
+			
+			
+			Pet  <- leaf.Coords[organ_N==i][1:2,1:3]
+			Leaf <-  leaf.Coords[organ_N==i][2:np,1:3]			#2:Number of points
+
+				for(j in 1:nrow(TriDF))							#Triangulation
+					{
+						tri.Points <- TriDF[j,]
+						
+							if(exists("mTriX")==FALSE){				#CheckExistence		
+									mTriX <-	matrix(	
+											c(	Leaf$x[tri.Points],
+												Leaf$y[tri.Points],
+												Leaf$z[tri.Points])
+											,byrow=FALSE,ncol=3)
+							}else{			
+									mTriX <-	rbind(mTriX,matrix(	
+												c(	Leaf$x[tri.Points],
+													Leaf$y[tri.Points],
+													Leaf$z[tri.Points])
+												,byrow=FALSE,ncol=3)	
+												)
+							}	
+					}
+
+
+				#Petioles
+				if(exists("mPetX")==FALSE){ 
+				mPetX <- Pet[,1:3]  				#First in SmallL		
+				}else{ 
+				mPetX <- rbind(mPetX,Pet[,1:3])	
+				}
+				#segments3d(Pet[,1:3],		col=col.pet,		lwd=4)
+
+			}
+	}	
 
 
 ###############################################
 
 open3d()
 ###############################################
-#Knoten/Stamm
+# Internodes 
 ###############################################
+
+#Main 
 lines3d(main.node.Coords[,1:3],lwd=6,col="#7f2704")
-for(i in unique(sub.node.Coords$Grp))
-{
-#TODO Create Lines or multiple segments | multi segs sind schneller geplotted aber vllt irrelevant
-	lines3d(sub.node.Coords[Grp==i,1:3],lwd=3,col="#7f2704",add=TRUE)
-}
+
+#Functions to create "segment3d"-matrix  | segment 3d faster than multiple lines3d
+#Sub
+sub.node.Coords.2Seg <- function(i) {
+										nrowX <- nrow(sub.node.Coords[Grp==i,1:3])-1
+										return(sub.node.Coords[Grp==i,1:3][c(1,rep(2:nrowX,each=2),nrowX+1)])
+									}
+#Merge matrices and plot
+segments3d(rbindlist(lapply(unique(sub.node.Coords$Grp),sub.node.Coords.2Seg)),lwd=3,col="#7f2704",add=TRUE)
+
+# SubSub
+if(nrow(subsub.node.Coords)>0)
+	{
+	subsub.node.Coords.2seg <- function(i) {
+												nrowX <- nrow(subsub.node.Coords[Grp==i,1:3])-1
+												return(subsub.node.Coords[Grp==i,1:3][c(1,rep(2:nrowX,each=2),nrowX+1)])
+											}	
+	
+	segments3d(rbindlist(lapply(unique(subsub.node.Coords$Grp),subsub.node.Coords.2seg)),lwd=3,col="#7f2704",add=TRUE)
+	}
 
 
-for(i in unique(subsub.node.Coords$Grp))
-{
-#TODO Create Lines or multiple segments | multi segs sind schneller geplotted aber vllt irrelevant
-	lines3d(subsub.node.Coords[Grp==i,1:3],lwd=3,col="#7f2704",add=TRUE)
-}
+###############################################
+# Flowers
+###############################################
 
-for(i in unique(flower.Coords$organ_N_unique))
-{
-#TODO Create Lines or multiple segments | multi segs sind schneller geplotted aber vllt irrelevant
-	lines3d(flower.Coords[organ_N_unique==i,1:3],lwd=2,col="orange",add=TRUE)
-}
+if(nrow(flower.Coords)>0)
+	{
+	flower.Coords.2seg <- function(i) 	{
+											nrowX <- nrow(flower.Coords[organ_N_unique==i,1:3])-1
+											return(flower.Coords[organ_N_unique==i,1:3][c(1,rep(2:nrowX,each=2),nrowX+1)])
+										}	
+	
+	segments3d(rbindlist(lapply(unique(flower.Coords$organ_N_unique),flower.Coords.2seg)),lwd=2,col="orange",add=TRUE)
+	}
+
 
 
 
 ###############################################
-#Blätter
+# Leaves
 ###############################################
+
 if(nrow(leaf.Coords)!=0)
-{
-	triangles3d(mTriX,col=col.leaf)	
-	segments3d(mPetX,col=col.pet,lwd=4)
-}
+	{
+		triangles3d(mTriX,col=col.leaf)	
+		segments3d(mPetX,col=col.pet,lwd=4)
+	}
 
+# Initial view settings [optional]
 uMat <- matrix(c(	1,0,0,0,
 					0,0,1,0,
 					0,1,0,0,
 					0,0,0,1),byrow=TRUE,nrow=4)
 
-aspect3d("iso")
+# Aspect Ratio 
+aspect3d("iso") #Aspect "iso" signifies that the coordinates should all be displayed at the same scale
+# Add title = filename
 title3d(flistID)
-#view3d(theta=180, phi=-60)
-#par3d(userMatrix=uMat)
-#uMat <- matrix(c(	1,0,0,0,
-#					0,0,1,0,
-#					0,1,0,0,
-#					0,0,0,1),byrow=TRUE,nrow=4)
 
+#Optional: Viewpoint
+#par3d(userMatrix=uMat)
+
+#Save To "Scene" for WebGL
 scene1 <- scene3d()
 return(scene1)
 }
 
 
+#Example plotRGL(flist[1])
+#system.time(plotRGL(flist[2]))
+
 #SOURCEBREAK
 
 
 
-# TODO Leaves mit full points 
-# vergleichen mit denen die weniger haben
-# Estimate leaf area from "seitenlöngen"
-# Fehler abschätzung 
 
 
-
-
-#Internode length
-#Sub Nodes
-
-
-
-####################################################################################################################################################################################################################################
 ########################################################################################################################################################
-# TODO WEITER HIER für 2019
+# Analysis
 ########################################################################################################################################################
-#dfILSub <- rbindlist(lapply(unique( dPlantCoords[oType=="sub.Node"]$Grp),f.ilSub))
+#######################
+# Internode length
+#######################
 
 f.ilSubAll <- function(flistID) {
 
-dPlantCoords <- f.dPlantCoords(flistID)
+	#Get Plant Coordinates
+	dPlantCoords <- f.dPlantCoords(flistID)
 
-	f.ilSub <-  function(grpI) {
+	#Function to estimate Internode length from a numerical matrix of 3D coordinates | per "Shoot"
+	f.ilSub <-  function(grpI) 
+			{
+				#Extract data
+				m <- dPlantCoords[oType=="sub.Node" & Grp==grpI][,1:3]
+				#Create Matrix
+				m <- as.matrix(m)
+				# 
+				if(nrow(m)==1) #Only one point 
+					{
+						out <- data.table(Grp=grpI, IL = 0, Rank = 0)
 
-		m <- dPlantCoords[oType=="sub.Node" & Grp==grpI][,1:3]
-		m <- as.matrix(m)
-			if(nrow(m)==1)
-			{
-			out <- data.table(Grp=grpI, IL = 0, Rank = 0)
-			}else if(nrow(m)==2) #Added 2019 for single internode stems
-			{
-				out <- data.table(Grp=grpI, IL = as.numeric(dist(m)))
-				out$Rank <- 1:nrow(out)
-			}else{
-				out <- data.table(Grp=grpI, IL = diag(as.matrix(dist(m))[-1,- nrow(m)]))
-				out$Rank <- 1:nrow(out)
+				}else if(nrow(m)==2) #Added 2019 for single internode stems | 2 Points
+					{
+						out <- data.table(Grp=grpI, IL = as.numeric(dist(m)))					#dist = euclidean distance
+						out$Rank <- 1:nrow(out)													#Rank = Number of Internode
+
+				}else{ #More than 2 Points ...
+						out <- data.table(Grp=grpI, IL = diag(as.matrix(dist(m))[-1,-nrow(m)]))  #extract diagonal after removing 1st row and last column
+						out$Rank <- 1:nrow(out) 												 #Rank = Number of Internode	
+
+					}
+
+				return(out)
 			}
 
-		return(out)
-		}
 
 
 
+	dfILSub <- rbindlist(lapply(unique(dPlantCoords[oType=="sub.Node"]$Grp),f.ilSub))
 
-dfILSub <- rbindlist(lapply(unique(dPlantCoords[oType=="sub.Node"]$Grp),f.ilSub))
+	dfILSub <- cbind(dfILSub,dPlantCoords[1,c("Date","Plant","Ring","Elevated")])
 
+	#Add columns to identify plant
+	# dfILSub[,"Date":= stri_split_fixed(flistID,pattern="/",simplify=TRUE)[,2] ]	#Date from folder name
+	# dfILSub[,"Plant" := gsub(stri_split_regex(flistID,pattern="[/.]",simplify=TRUE)[,5],pattern = "-", replacement = "") ] #Plant from file name
+	# dfILSub[,"Ring" := substr(Plant,1,1)] 				#From Plant Name
+	# dfILSub[,"Elevated" := Ring%in%c("B","D","E")]		#From Ring Name
 
-
-dfILSub$Date <- stri_split_regex(flistID, pattern="[./]",simplify = TRUE)[,3]
-dfILSub$Plant <- gsub(stri_split_regex(flistID,pattern="[/.]",simplify=TRUE)[,5],pattern = "-", replacement = "") #stri_split_regex(flistID,pattern="[/.]",simplify=TRUE)[,5]
-dfILSub$Ring <- stri_split_regex(flistID, pattern="[./0-9-]",simplify = TRUE)[,13]
-dfILSub$Elevated <- dfILSub$Ring%in%c("B","D","E")
 return(dfILSub)
 }
 
 
 
-
-
+# Get Internode Data Frame for all Plants
 dfILSubAll <-  rbindlist(lapply(flist,f.ilSubAll),fill=TRUE)
 
 
 pIL <- ggplot(dfILSubAll, aes(x=Rank, y=IL,color=Plant))+
-	geom_point()+
-	geom_line(aes(linetype=Elevated))+
-	facet_grid(Grp~Date)
+		geom_point()+
+		geom_line(aes(linetype=Elevated))+
+		facet_grid(Grp~Date)
 
 #Mean / Summe
 
@@ -861,7 +890,7 @@ pIL.box <- ggplot(dfILSubAll, aes(x=Ring, y=IL, fill=Elevated))+
 #exp(coef(m2)[2])
 #(coef(m2)[1])
 
-library(rstanarm)
+library("rstanarm")
 
 #save(m3.stan.0, file="m3.Rdata")
 load(file="m3.Rdata")
