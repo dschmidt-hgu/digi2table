@@ -557,7 +557,6 @@ allPlant <- rbindlist(lapply(flist,f.dPlantCoords),fill=TRUE)
 
 ##############################################
 # Create plotting function
-#TODO weiter hier
 ##############################################
 
 
@@ -567,7 +566,7 @@ plotRGL <- function(flistID){
 #Get Plant Coordinates
 dPlantCoords <- f.dPlantCoords(flistID)
 
-#Splitback for efficient lotting
+#Splitback for efficient plotting
 leaf.Coords <- dPlantCoords[oType=="Leaf"]
 flower.Coords <- dPlantCoords[oType=="Flower"]
 main.node.Coords <- dPlantCoords[oType=="main.Node"]
@@ -576,8 +575,9 @@ subsub.node.Coords <- dPlantCoords[oType=="subsub.Node"]
 
 
 
-#PREPARE LEAF MATRIX
-# Blätter
+
+# Leaves
+# prepare Leaf matrices for efficient plotting [triangles with triangles3d]
 if(nrow(leaf.Coords)!=0)
 	{
 	#Idenfitfy Numbers of Points | re-order to match automatic ordering of "table"
@@ -844,23 +844,18 @@ f.ilSubAll <- function(flistID) {
 
 
 
-
+	#gather data for all shoots
 	dfILSub <- rbindlist(lapply(unique(dPlantCoords[oType=="sub.Node"]$Grp),f.ilSub))
 
+	#Add experimental information
 	dfILSub <- cbind(dfILSub,dPlantCoords[1,c("Date","Plant","Ring","Elevated")])
-
-	#Add columns to identify plant
-	# dfILSub[,"Date":= stri_split_fixed(flistID,pattern="/",simplify=TRUE)[,2] ]	#Date from folder name
-	# dfILSub[,"Plant" := gsub(stri_split_regex(flistID,pattern="[/.]",simplify=TRUE)[,5],pattern = "-", replacement = "") ] #Plant from file name
-	# dfILSub[,"Ring" := substr(Plant,1,1)] 				#From Plant Name
-	# dfILSub[,"Elevated" := Ring%in%c("B","D","E")]		#From Ring Name
 
 return(dfILSub)
 }
 
 
 
-# Get Internode Data Frame for all Plants
+# Get Internode Data Frame for all Plants of "Primary Shoot" Internodes
 dfILSubAll <-  rbindlist(lapply(flist,f.ilSubAll),fill=TRUE)
 
 
@@ -882,111 +877,112 @@ pIL.box <- ggplot(dfILSubAll, aes(x=Ring, y=IL, fill=Elevated))+
 ##Area Estimation D_1_4 + D_1_5
 # Plots
 ############################################################################
-# WITH DATA FROM  JOHANNA DÖRING
-# MAIL "WG: Blätter und Blattmodelle"
-# M1 = SL = Summe 
-# M2 = log(Summe)
 
-#exp(coef(m2)[2])
-#(coef(m2)[1])
+# library("rstanarm")
+#load(file="m3.Rdata")
+# coef(m3.stan.0)
+#        SL 
+# 0.6869294 
 
-library("rstanarm")
+predictAfromSL <- function(SL) { 
+									sqrtA <- 0.6869294*SL
+				
+								 	A <- sqrtA^2
 
-#save(m3.stan.0, file="m3.Rdata")
-load(file="m3.Rdata")
+								 	return(A)
+								}
 
 ############################################################################
 
-#Distances: 
-
-#flistID <- flist[1]
-
-
+#Function to pre-check Plants for existence of Leaves
 check.f.LforA <- function(flistID)
 {
-dPlantCoords <- f.dPlantCoords(flistID)
+	dPlantCoords <- f.dPlantCoords(flistID)
 
+	dL <- dPlantCoords[oType=="Leaf"]
 
-dL <- dPlantCoords[oType=="Leaf"]
-
-if(nrow(dL)!=0)
-	{
-		return(flistID)
-	}
-	else
-	{
-		return(NULL)
-	}
+	if(nrow(dL)!=0)
+		{
+			return(flistID)
+		}
+		else
+		{
+			return(NULL)
+		}
 }
 
+#flist of Plants with leaves
 flistLA <- unlist(lapply(X=flist,FUN=check.f.LforA))
 
 
 
 
-
+#Function to estimate SL's from Plants
 f.LforA <- function(flistID)
 {
-dPlantCoords <- f.dPlantCoords(flistID)
+	#Get Plant coordinates
+	dPlantCoords <- f.dPlantCoords(flistID)
+
+	#Subset to only leaves
+	dL <- dPlantCoords[oType=="Leaf"]
+
+	#Create data frame holding the number of points per digitized leaf
+	dtpts <- as.data.table(table(dL$organ_N))
+	dtpts[,"ord":= order(unique(dL$organ_N))]	
+	dtpts <- dtpts[order(ord)]				#Reorder to match data order in dL
+
+	#create 'Looping' Vector 					
+	pts <- dtpts$N 
+
+	#Create PointID sequence
+	ptsSeq <- unlist(lapply(pts, function(i) {c(0:(pts[i]-1))}))
+
+	#Assign to data frame
+	dL[,"point":= ptsSeq]
+	dL[,"pts":= rep(pts,pts)]
+
+	#Extract Point IDs for different leaf complexities that match the SL Points
+	L6 <- dL[pts==6 & point%in%c(1,4,5)]
+	L10 <- dL[pts==10 & point%in%c(1,4,7)]
+	L10[point==7,  "point":= 5]
+	L18 <- dL[pts==18 & point%in%c(1,6,13)]
+	L18[point==6,  "point":= 4]
+	L18[point==13, "point":= 5]
+
+	#Merge all extraction into 1 data table
+	LforA <- rbind(L6,L10,L18)
+
+	#measure distances
+	mD <- as.matrix(dist(as.matrix(LforA[,1:3],method="euclidean")))
+
+	#Extract every "third" row --> Distances to "1"
+	mD1er <- mD[,seq(1,ncol(mD),by=3)]
+
+	#Creat Empty Matrix
+	tmp  <- matrix(vector(),ncol=2,ncol(mD1er))
+
+	#Extract for each leaf [col in mD1er]
+		# the corresponding rows
+		# 1+(i-1)*3+(1:2) : 
+			#i=1 >> 2+3
+			#i=2 >> 5+6
+	for(i in 1:ncol(mD1er))
+	{
+		tmp[i,] = mD1er[1+(i-1)*3+(1:2),i]
+	}
 
 
-dL <- dPlantCoords[oType=="Leaf"]
+	#Remove duplicated Rows
+	LforA <- LforA[seq(1,nrow(LforA),by=3)]
 
+	#Add Distances to Data Frame of Leaves
+	LforA <- cbind(LforA,tmp)
+	colnames(LforA)[(ncol(LforA)-1):ncol(LforA)] <- c("LL","LR")   #Leaft secondary vein, right secondary vein
 
-dtpts <- as.data.table(table(dL$organ_N))
-dtpts$ord <- order(unique(dL$organ_N))
-dtpts <- dtpts[order(ord)]
+	#Create Sum of Secondary Leaf Veins
+	LforA[,"SL":=LL+LR]  
 
-
-pts <- dtpts$N #as.vector(table(dL$organ_N)) #
-
-ptsSeq <- vector()
-for(i in 1:length(pts))
-{
-ptsSeq <- c(ptsSeq,c(0:(pts[i]-1)))
-}
-
-dL$point = ptsSeq
-dL$pts <- rep(pts,pts)
-
-L6 <- dL[pts==6 & point%in%c(1,4,5)]
-L10 <- dL[pts==10 & point%in%c(1,4,7)]
-L10[point==7]$point = 51
-L18 <- dL[pts==18 & point%in%c(1,6,13)]
-L18[point==6]$point = 4
-L18[point==13]$point = 5
-
-LforA <- rbind(L6,L10,L18)
-
-mD <- as.matrix(dist(as.matrix(LforA[,1:3],method="euclidean")))
-mD1er <- mD[,seq(1,ncol(mD),by=3)]
-
-
-tmp  <- matrix(vector(),ncol=2,ncol(mD1er))
-
-for(i in 1:ncol(mD1er))
-{
-tmp[i,] = mD1er[1+(i-1)*3+(1:2),i]
-}
-
-
-#Remove duplicated Rows
-LforA <- LforA[seq(1,nrow(LforA),by=3)]
-
-LforA <- cbind(LforA,tmp)
-colnames(LforA)[(ncol(LforA)-1):ncol(LforA)] <- c("LL","LR")
-LforA[,"SL.org":=LL+LR]  #ORG
-LforA[,"SL":=log(SL.org)]  	#LOG
-
-
-LforA$Date <- stri_split_regex(flistID, pattern="[./]",simplify = TRUE)[,3]
-LforA$Plant <- gsub(stri_split_regex(flistID,pattern="[/.]",simplify=TRUE)[,5],pattern = "-", replacement = "") #stri_split_regex(flistID,pattern="[/.]",simplify=TRUE)[,5]
-LforA$Ring <- stri_split_regex(flistID, pattern="[./0-9-]",simplify = TRUE)[,13]
-LforA$Elevated <- LforA$Ring%in%c("B","D","E")
-
-
-
-return(LforA)
+	return(LforA)
 }
 
 #only perform on plants with leaves
@@ -996,12 +992,13 @@ dLforA <- rbindlist(lapply(flistLA,f.LforA))
 
 
 # #M3
- dLforA$A.mean <- as.numeric(colMeans(posterior_predict(m3.stan.0,newdata = data.frame(SL=dLforA$SL.org)))^2)
+#dLforA$A.mean <- as.numeric(colMeans(posterior_predict(m3.stan.0,newdata = data.frame(SL=dLforA$SL)))^2)
+dLforA[,"A.mean":= predictAfromSL(SL)]
 
 
-dLforA$Shoot <- as.numeric(stri_split_regex(dLforA$organ_N, pattern="[_]",simplify = TRUE)[,2])
-dLforA$Rank <- as.numeric(stri_split_regex(dLforA$organ_N, pattern="[_]",simplify = TRUE)[,3])
-dLforA$SubShoot <- as.numeric(stri_split_regex(dLforA$organ_N, pattern="[_]",simplify = TRUE)[,4])
+dLforA[,"Shoot":= as.numeric(stri_split_regex(organ_N, pattern="[_]",simplify = TRUE)[,2])    ]
+dLforA[,"Rank":= as.numeric(stri_split_regex(organ_N, pattern="[_]",simplify = TRUE)[,3])	  ]
+dLforA[,"SubShoot":= as.numeric(stri_split_regex(organ_N, pattern="[_]",simplify = TRUE)[,4]) ] #warning if not existent => NA
 
 pAL <- ggplot(dLforA[is.na(SubShoot)], aes(x=Rank, y=A.mean,color=Plant))+
 	#geom_ribbon(aes(ymin=A.HPDI95.low,ymax=A.HPDI95.high),alpha=0.5, color="grey")+
@@ -1019,76 +1016,10 @@ pAL.box <- ggplot(dLforA[is.na(SubShoot)], aes(x=Ring, y=A.mean, fill=Elevated))
 
 
 
-#TODO Check Leaf Area Predictions vs Procrustes Predictions
 
 
 #TODO Go parallel | only for plants with leaves
-allPlant <- rbindlist(lapply(flistLA,f.dPlantCoords),fill=TRUE)
+# allPlant <- rbindlist(lapply(flistLA,f.dPlantCoords),fill=TRUE)
 
-leaf.Coords <- allPlant[oType=="Leaf"]
-leaf.Coords[,"LID":=paste(Date,Plant,organ_N,sep="_")]
-
-
-# #TODO PROBLEM DOPPELTES LEAF
-# #also erstmal alle auf 18 Pt erhöhen ...
-# #bzw. wenn Doppelt noch etwas dranhängen? Oder ist das schon? s. Gurke
-# #Area From Triangulation
-# fullLeafIDS <- as.data.table(as.matrix(table(leaf.Coords$LID)==18),keep.rownames = TRUE)[V1==TRUE]$rn
-
-# dfLeafAreaTri <- data.table(LID=fullLeafIDS, A=0)
-
-# 	#Full Leaves 
-# 	for(i in fullLeafIDS)
-# 		{
-# 		Leaf <-   leaf.Coords[LID==i]
-# 		Leaf$point=0:17
-
-# 			dfLeafAreaTri[LID==i, "A":=sum(vTriA3D(a=Tri17[,1],b=Tri17[,2],c=Tri17[,3],	
-# 								DF=replicate(Leaf,n=nrow(Tri17),simplify = FALSE)))]
-
-		
-# 		}
-
-
-
-
-# dfLeafAreaTri
-# #dfLeafArea[LID%in%fullLeafIDS]
-
-
-# dLforA[,"LID":=paste(Date,Plant,organ_N,sep="_")]
-
-# 	nrow(dLforA)
-# 	nrow(dfLeafAreaTri)
-
-# length(fullLeafIDS)
-
-# dLforA[dLforA$LID%!in%dfLeafAreaTri$LID]	#3x 10 pts measured
-# dfLeafAreaTri[dfLeafAreaTri$LID%!in%dLforA$LID]	
-
-
-# mergedDLAs <- merge(dLforA,dfLeafAreaTri,by="LID")
-
-# #Vergleich Leaf Area for Procrustes "Rescaling" gegen "Model Leaf Area"
-# #plot(mergedDLAs$A.mean~mergedDLAs$A)
-# #abline(a=0,b=1)
-# #sqrt(sum((mergedDLAs$A.mean-mergedDLAs$A)^2))
-
-
-# pAProc.AMod <- ggplot(mergedDLAs, aes(x=A.mean,y=A))+
-# 					geom_point()+
-# 					xlab("A.model")+ylab("A.procrustes")+
-# 					geom_abline(intercept=0,slope=1, color="red")+
-# 					coord_fixed()
-
-# #WELCHEN FEHLER Macht Procrustes im Vergleich zur 2d Fläche ?
-# 	#Fehlerquellen:
-# 		#Wölbung
-# 		#UND Abschnitte Außen durch rundungen !!!
-# ggplot(mergedDLAs, aes(x=A.mean.m3,y=A))+
-# 					geom_point()+
-# 					xlab("A.model3")+ylab("A.procrustes")+
-# 					geom_abline(intercept=0,slope=1, color="red")+
-# 					coord_fixed()
-
-
+# leaf.Coords <- allPlant[oType=="Leaf"]
+# leaf.Coords[,"LID":=paste(Date,Plant,organ_N,sep="_")]
