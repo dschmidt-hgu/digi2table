@@ -1,0 +1,669 @@
+D10-32
+//Node
+ID: 0
+Parent: none
+1;116.7;-37.45;73.18
+//EndModule
+//Node
+ID: 1
+Parent: 0 Internode
+1;120.4;-19.06;21.07
+//EndModule
+//Node
+ID: 2
+Parent: 1 Internode
+1;120.5;-20.86;19.08
+//EndModule
+//Node
+ID: 3
+Parent: 2 Internode
+1;121.11;-17.97;19.2
+//EndModule
+//Node
+ID: 3.1.1
+Parent: 3 Internode
+1;121.18;-17.9;19.46
+//EndModule
+//Node
+ID: 3.1.2
+Parent: 3.1.1 Internode
+1;121.19;-17.68;20.2
+//EndModule
+//Node
+ID: 3.1.3
+Parent: 3.1.2 Internode
+1;122.06;-17.55;19.45
+//EndModule
+//Leaf
+ID: 3.1.3_[Leaf]
+Parent: 3.1.3 Internode
+1;122.25;-17.52;19.32
+1;123.08;-17.89;17.83
+1;123.86;-19.12;17.7
+1;124.46;-20.52;17.63
+1;123.64;-20.01;15.71
+1;125.41;-18.17;18.36
+//EndModule
+//Node
+ID: 3.1.4
+Parent: 3.1.3 Internode
+1;123.28;-16.07;17.99
+//EndModule
+//Leaf
+ID: 3.1.4_[Leaf]
+Parent: 3.1.4 Internode
+1;123.35;-16.02;18.03
+1;124.52;-14.88;17.44
+1;125.46;-14.46;17.54
+1;126.52;-13.1;17.89
+1;124.72;-13.23;16.16
+1;127.34;-14.47;17.97
+//EndModule
+//Flower
+ID: 3.1.4_[Flower]
+Parent: 3.1.4 Internode
+1;123.43;-16.63;17.92
+1;123.92;-16.58;17.33
+1;124.85;-16.29;16.1
+//EndModule
+//Node
+ID: 3.1.5
+Parent: 3.1.4 Internode
+1;124.51;-15.83;16.13
+//EndModule
+//Node
+ID: 3.1.6
+Parent: 3.1.5 Internode
+1;125.54;-15.1;15.35
+//EndModule
+//Node
+ID: 4
+Parent: 3 Internode
+1;120.97;-18.54;16.39
+//EndModule
+//Node
+ID: 4.1.1
+Parent: 4 Internode
+1;121.42;-18.67;16.1
+//EndModule
+//Node
+ID: 4.1.2
+Parent: 4.1.1 Internode
+1;121.08;-19.13;15.75
+//EndModule
+//Leaf
+ID: 4.1.2_[Leaf]
+Parent: 4.1.2 Internode
+1;120.91;-19.21;15.63
+1;119.16;-20.43;13.61
+1;117.99;-20.42;14.07
+1;115.46;-20.43;14.82
+1;116.34;-18.84;12.81
+1;116.84;-22.88;14.52
+//EndModule
+//Node
+ID: 4.1.3
+Parent: 4.1.2 Internode
+1;121.55;-19.43;13.99
+//EndModule
+//Leaf
+ID: 4.1.3_[Leaf]
+Parent: 4.1.3 Internode
+1;121.54;-19.59;13.64
+1;123.17;-19.65;11.3
+1;124.76;-20.25;10.84
+1;127.75;-20.46;10.76
+1;126.94;-22.9;10.47
+1;126.56;-18.12;9.38
+//EndModule
+//Flower
+ID: 4.1.3_[Flower]
+Parent: 4.1.3 Internode
+1;120.88;-19.71;13.69
+1;120.45;-20.48;12.58
+1;119.98;-21.44;10.37
+//EndModule
+//Node
+ID: 4.1.4
+Parent: 4.1.3 Internode
+1;120.69;-20.18;10.82
+//EndModule
+//Leaf
+ID: 4.1.4_[Leaf]
+Parent: 4.1.4 Internode
+1;120.59;-20.28;10.68
+1;120.06;-20.69;9.07
+1;119.92;-21.88;7.67
+1;118.65;-22.68;5.86
+1;118.74;-20.92;7.1
+1;120.63;-23.19;6.28
+//EndModule
+//Node
+ID: 4.1.5
+Parent: 4.1.4 Internode
+1;121.83;-19.82;8.4
+//EndModule
+//Flower
+ID: 4.1.5_[Flower]
+Parent: 4.1.5 Internode
+1;121.66;-19.66;8.48
+1;121.47;-19.39;7.35
+1;121.35;-18.33;5.31
+//EndModule
+//Node
+ID: 4.1.6
+Parent: 4.1.5 Internode
+1;122.64;-19.25;6.93
+//EndModule
+//Node
+ID: 5
+Parent: 4 Internode
+1;123.96;-14.16;12.75
+//EndModule
+//Node
+ID: 6
+Parent: 5 Internode
+1;124.01;-7.71;7.59
+//EndModule
+//Node
+ID: 6.1.1
+Parent: 6 Internode
+1;124.02;-8.16;7.29
+//EndModule
+//Node
+ID: 6.1.2
+Parent: 6.1.1 Internode
+1;124.3;-7.97;6.84
+//EndModule
+//Leaf
+ID: 6.1.2_[Leaf]
+Parent: 6.1.2 Internode
+1;124.2;-9.79;6.86
+1;123.74;-9.97;5.43
+1;123.16;-11.29;5.23
+1;122.24;-12.16;5.69
+1;121.19;-10.88;5.4
+1;123.42;-12.76;4.78
+//EndModule
+//Node
+ID: 6.1.3
+Parent: 6.1.2 Internode
+1;124.95;-8.48;5.92
+//EndModule
+//Leaf
+ID: 6.1.3_[Leaf]
+Parent: 6.1.3 Internode
+1;125.07;-8.72;5.97
+1;126.55;-8.23;3.73
+1;128.38;-8.54;3.67
+1;130.74;-7.81;4.77
+1;130.64;-11.11;4.18
+1;129.52;-5.57;3.97
+//EndModule
+//Node
+ID: 6.1.4
+Parent: 6.1.3 Internode
+1;124.34;-8.1;2.74
+//EndModule
+//Leaf
+ID: 6.1.4_[Leaf]
+Parent: 6.1.4 Internode
+1;124.42;-8.26;2.63
+1;123.39;-9.53;0.12
+1;122.23;-10.33;0.24
+1;119.98;-12.4;0.56
+1;119.26;-9.9;-0.31
+1;122.29;-13.43;-0.78
+//EndModule
+//Flower
+ID: 6.1.4_[Flower]
+Parent: 6.1.4 Internode
+1;125.15;-7.94;2.72
+1;125.54;-7.58;1.74
+1;125.15;-6.85;-0.63
+//EndModule
+//Node
+ID: 6.1.5
+Parent: 6.1.4 Internode
+1;124.58;-7.74;-1.5
+//EndModule
+//Leaf
+ID: 6.1.5_[Leaf]
+Parent: 6.1.5 Internode
+1;124.37;-7.45;-1.58
+1;124.19;-7.71;-3.71
+1;124.56;-7.26;-4.66
+1;124.73;-6.02;-7.5
+1;124.91;-9.06;-7.29
+1;124.06;-4.59;-5.19
+//EndModule
+//Flower
+ID: 6.1.5_[Flower]
+Parent: 6.1.5 Internode
+1;124.3;-7.72;-1.63
+1;123.54;-7.93;-2.66
+1;121.8;-8.21;-4.66
+//EndModule
+//Node
+ID: 6.1.6
+Parent: 6.1.5 Internode
+1;123.73;-7.53;-4.18
+//EndModule
+//Node
+ID: 6.1.7
+Parent: 6.1.6 Internode
+1;123.76;-6.82;-6.06
+//EndModule
+//Node
+ID: 7
+Parent: 6 Internode
+1;125.74;2.69;9.4
+//EndModule
+//Node
+ID: 7.1.1
+Parent: 7 Internode
+1;125.86;2.67;9.35
+//EndModule
+//Node
+ID: 7.1.2
+Parent: 7.1.1 Internode
+1;126.23;3.56;8.91
+//EndModule
+//Node
+ID: 7.1.3
+Parent: 7.1.2 Internode
+1;126.31;3.6;8.86
+//EndModule
+//Leaf
+ID: 7.1.3_[Leaf]
+Parent: 7.1.3 Internode
+1;126.32;3.51;8.77
+1;126.55;3.03;6.83
+1;126.57;1.73;5.68
+1;126.12;0.16;4.84
+1;124.76;1.17;4.96
+1;127.43;0.21;4.82
+//EndModule
+//Node
+ID: 7.1.4
+Parent: 7.1.3 Internode
+1;127.45;5.13;8.66
+//EndModule
+//Leaf
+ID: 7.1.4_[Leaf]
+Parent: 7.1.4 Internode
+1;127.49;5.18;8.59
+1;129.43;6.11;8.12
+1;130.87;5.31;8.49
+1;133.42;4.22;9.53
+1;132.66;3.61;6.98
+1;132.24;6.6;10.08
+//EndModule
+//Flower
+ID: 7.1.4_[Flower]
+Parent: 7.1.4 Internode
+1;127.67;4.53;8.01
+1;127.99;5.01;7.22
+1;128.96;5.72;6.26
+//EndModule
+//Node
+ID: 7.1.5
+Parent: 7.1.4 Internode
+1;128.26;6.51;6.66
+//EndModule
+//Leaf
+ID: 7.1.5_[Leaf]
+Parent: 7.1.5 Internode
+1;128.12;6.42;6.22
+1;128.52;6.4;5.17
+1;128.62;6.37;4.48
+1;129.44;6.85;2.46
+1;127.42;7.64;2.87
+1;130.45;5.54;2.94
+//EndModule
+//Flower
+ID: 7.1.5_[Flower]
+Parent: 7.1.5 Internode
+1;128.38;6.94;6.52
+1;128.89;7.76;5.8
+1;129.53;9.0;5.3
+//EndModule
+//Node
+ID: 7.1.6
+Parent: 7.1.5 Internode
+1;129.09;7.57;5.37
+//EndModule
+//Node
+ID: 7.1.7
+Parent: 7.1.6 Internode
+1;129.62;7.96;4.4
+//EndModule
+//Node
+ID: 8
+Parent: 7 Internode
+1;125.89;13.88;5.75
+//EndModule
+//Node
+ID: 8.1.1
+Parent: 8 Internode
+1;125.88;13.95;5.66
+//EndModule
+//Node
+ID: 8.1.2
+Parent: 8.1.1 Internode
+1;126.2;14.56;5.37
+//EndModule
+//Leaf
+ID: 8.1.2_[Leaf]
+Parent: 8.1.2 Internode
+1;126.15;14.06;5.35
+1;125.71;12.59;3.16
+1;126.27;10.85;3.55
+1;127.62;9.08;4.28
+1;125.38;8.76;5.53
+1;128.08;9.14;1.7
+//EndModule
+//Node
+ID: 8.1.3
+Parent: 8.1.2 Internode
+1;126.32;15.57;5.11
+//EndModule
+//Leaf
+ID: 8.1.3_[Leaf]
+Parent: 8.1.3 Internode
+1;126.49;15.69;5.22
+1;126.8;18.62;3.4
+1;126.37;20.04;3.96
+1;126.84;23.13;5.99
+1;129.68;22.49;3.37
+1;122.84;21.39;6.49
+//EndModule
+//Leaf
+ID: 8.1.3_[Leaf]_2
+Parent: 8.1.3 Internode
+1;126.7;15.13;5.31
+1;127.74;16.21;2.51
+1;129.01;16.47;1.58
+1;131.29;15.31;-0.35
+1;127.32;17.3;-0.72
+1;131.03;18.75;2.26
+//EndModule
+//Flower
+ID: 8.1.3_[Flower]
+Parent: 8.1.3 Internode
+1;126.02;15.37;5.17
+1;125.76;15.59;3.95
+1;125.48;18.27;0.01
+//EndModule
+//Node
+ID: 9
+Parent: 8 Internode
+1;128.41;28.16;9.32
+//EndModule
+//Node
+ID: 9.1.1
+Parent: 9 Internode
+1;128.49;28.19;9.38
+//EndModule
+//Node
+ID: 9.1.2
+Parent: 9.1.1 Internode
+1;128.37;28.47;9.6
+//EndModule
+//Leaf
+ID: 9.1.2_[Leaf]
+Parent: 9.1.2 Internode
+1;128.38;28.35;9.76
+1;127.11;28.83;10.76
+1;126.41;28.92;11.24
+1;125.52;28.17;12.43
+1;126.36;30.12;12.83
+1;125.08;27.73;10.36
+//EndModule
+//Node
+ID: 9.1.3
+Parent: 9.1.2 Internode
+1;128.76;29.03;9.48
+//EndModule
+//Leaf
+ID: 9.1.3_[Leaf]
+Parent: 9.1.3 Internode
+1;128.86;29.08;9.24
+1;129.28;28.66;7.26
+1;129.53;27.75;5.96
+1;129.48;26.17;5.06
+1;127.89;27.38;5.2
+1;131.1;26.73;5.33
+//EndModule
+//Flower
+ID: 9.1.3_[Flower]
+Parent: 9.1.3 Internode
+1;128.9;29.19;9.67
+1;129.29;30.09;9.5
+1;129.64;30.86;8.71
+//EndModule
+//Node
+ID: 9.1.4
+Parent: 9.1.3 Internode
+1;129.81;30.58;7.7
+//EndModule
+//Leaf
+ID: 9.1.4_[Leaf]
+Parent: 9.1.4 Internode
+1;129.75;30.29;7.64
+1;130.27;31.47;7.15
+1;131.54;32.3;7.23
+1;132.1;33.87;8.16
+1;133.19;32.29;7.41
+1;129.84;34.02;7.06
+//EndModule
+//Node
+ID: 9.1.5
+Parent: 9.1.4 Internode
+1;129.85;31.2;6.06
+//EndModule
+//Node
+ID: 9.1.6
+Parent: 9.1.5 Internode
+1;130.5;31.62;4.91
+//EndModule
+//Node
+ID: 10
+Parent: 9 Internode
+1;130.51;39.52;6.78
+//EndModule
+//Node
+ID: 10.1.1
+Parent: 10 Internode
+1;130.31;40.48;7.43
+//EndModule
+//Node
+ID: 10.1.2
+Parent: 10.1.1 Internode
+1;130.3;40.25;6.49
+//EndModule
+//Leaf
+ID: 10.1.2_[Leaf]
+Parent: 10.1.2 Internode
+1;130.34;40.28;6.35
+1;131.17;39.23;3.7
+1;131.16;37.51;3.58
+1;130.6;34.01;4.03
+1;129.31;36.09;0.65
+1;133.32;35.35;4.97
+//EndModule
+//Node
+ID: 10.1.3
+Parent: 10.1.2 Internode
+1;130.55;42.08;6.02
+//EndModule
+//Leaf
+ID: 10.1.3_[Leaf]
+Parent: 10.1.3 Internode
+1;130.59;42.08;5.9
+1;131.59;44.49;3.95
+1;133.04;45.54;3.51
+1;134.77;48.31;5.47
+1;136.85;45.16;4.72
+1;131.52;48.78;4.22
+//EndModule
+//Flower
+ID: 10.1.3_[Flower]
+Parent: 10.1.3 Internode
+1;130.53;40.91;6.03
+1;130.29;41.08;4.65
+1;130.33;42.34;1.87
+//EndModule
+//Node
+ID: 10.1.4
+Parent: 10.1.3 Internode
+1;130.61;42.38;2.87
+//EndModule
+//Leaf
+ID: 10.1.4_[Leaf]
+Parent: 10.1.4 Internode
+1;130.56;42.32;2.91
+1;130.93;40.91;0.22
+1;131.55;39.34;-0.98
+1;131.59;35.78;-1.52
+1;128.39;37.41;-1.8
+1;134.87;38.51;-2.38
+//EndModule
+//Flower
+ID: 10.1.4_[Flower]
+Parent: 10.1.4 Internode
+1;130.65;43.29;3.04
+1;130.55;44.08;1.54
+1;131.46;45.5;-1.1
+//EndModule
+//Node
+ID: 10.1.5
+Parent: 10.1.4 Internode
+1;130.41;43.89;-0.32
+//EndModule
+//Leaf
+ID: 10.1.5_[Leaf]
+Parent: 10.1.5 Internode
+1;130.71;44.23;-0.41
+1;131.52;45.33;-2.08
+1;132.54;45.96;-2.61
+1;134.71;48.8;-2.79
+1;135.12;46.26;-4.79
+1;130.79;48.93;-2.49
+//EndModule
+//Node
+ID: 10.1.6
+Parent: 10.1.5 Internode
+1;130.04;44.2;-3.47
+//EndModule
+//Flower
+ID: 10.1.6_[Flower]
+Parent: 10.1.6 Internode
+1;130.33;44.69;-3.53
+1;130.69;45.8;-4.68
+1;131.19;47.27;-6.53
+//EndModule
+//Node
+ID: 10.1.7
+Parent: 10.1.6 Internode
+1;130.16;44.92;-5.7
+//EndModule
+//Node
+ID: 11
+Parent: 10 Internode
+1;130.01;51.3;11.47
+//EndModule
+//Node
+ID: 11.1.1
+Parent: 11 Internode
+1;130.73;50.75;11.93
+//EndModule
+//Leaf
+ID: 11.1.1_[Leaf]
+Parent: 11.1.1 Internode
+1;130.38;51.31;11.81
+1;131.83;51.06;10.69
+1;131.64;50.63;10.2
+1;130.76;49.66;9.06
+1;131.39;52.7;9.03
+1;131.87;48.97;10.35
+//EndModule
+//Node
+ID: 11.1.2
+Parent: 11.1.1 Internode
+1;129.42;51.56;12.15
+//EndModule
+//Leaf
+ID: 11.1.2_[Leaf]
+Parent: 11.1.2 Internode
+1;129.55;51.54;12.31
+1;126.97;49.85;11.42
+1;125.9;48.8;12.08
+1;124.17;47.88;15.21
+1;122.93;50.66;13.13
+1;125.66;45.01;12.26
+//EndModule
+//Node
+ID: 11.1.3
+Parent: 11.1.2 Internode
+1;129.14;52.88;11.26
+//EndModule
+//Leaf
+ID: 11.1.3_[Leaf]
+Parent: 11.1.3 Internode
+1;129.49;53.15;10.82
+1;130.16;53.33;8.88
+1;131.23;53.57;8.14
+1;134.2;52.46;6.9
+1;130.35;51.18;6.31
+1;133.05;55.98;7.6
+//EndModule
+//Flower
+ID: 11.1.3_[Flower]
+Parent: 11.1.3 Internode
+1;128.95;52.4;11.77
+1;127.95;53.69;10.87
+1;127.23;55.03;8.38
+//EndModule
+//Node
+ID: 11.1.4
+Parent: 11.1.3 Internode
+1;127.74;55.65;8.84
+//EndModule
+//Leaf
+ID: 11.1.4_[Leaf]
+Parent: 11.1.4 Internode
+1;127.54;55.84;9.06
+1;126.43;57.29;8.28
+1;125.5;58.41;8.49
+1;122.7;60.08;10.68
+1;125.56;61.86;8.68
+1;121.9;57.25;8.11
+//EndModule
+//Flower
+ID: 11.1.4_[Flower]
+Parent: 11.1.4 Internode
+1;128.3;55.41;8.72
+1;128.3;55.71;7.34
+1;127.5;57.29;5.71
+//EndModule
+//Node
+ID: 11.1.5
+Parent: 11.1.4 Internode
+1;127.7;56.77;6.7
+//EndModule
+//Leaf
+ID: 11.1.5_[Leaf]
+Parent: 11.1.5 Internode
+1;127.58;57.11;7.0
+1;128.02;57.41;6.11
+1;128.07;57.94;5.17
+1;129.65;58.97;3.26
+1;128.39;56.76;4.87
+1;128.61;60.87;4.62
+//EndModule
+//Node
+ID: 11.1.6
+Parent: 11.1.5 Internode
+1;126.68;58.32;5.19
+//EndModule
