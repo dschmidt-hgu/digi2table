@@ -1,0 +1,321 @@
+E58-3.1
+//Node
+ID: 0
+Parent: none
+1;39.17;12.27;19.94
+//EndModule
+//Node
+ID: 1
+Parent: 0 Internode
+1;43.2;7.18;-1.45
+//EndModule
+//Node
+ID: 2
+Parent: 1 Internode
+1;43.48;7.96;-0.17
+//EndModule
+//Node
+ID: 2.1.1
+Parent: 2 Internode
+1;44.15;7.96;-0.55
+//EndModule
+//Node
+ID: 2.1.2
+Parent: 2.1.1 Internode
+1;43.74;8.46;-0.12
+//EndModule
+//Node
+ID: 2.1.3
+Parent: 2.1.2 Internode
+1;44.12;9.2;-0.69
+//EndModule
+//Node
+ID: 2.1.3.1.1
+Parent: 2.1.3 Internode
+1;44.19;9.19;-0.64
+//EndModule
+//Node
+ID: 2.1.3.1.2
+Parent: 2.1.3.1.1 Internode
+1;44.03;9.25;-1.18
+//EndModule
+//Node
+ID: 2.1.3.1.3
+Parent: 2.1.3.1.2 Internode
+1;45.39;9.75;-2.41
+//EndModule
+//Node
+ID: 2.1.4
+Parent: 2.1.3 Internode
+1;43.61;10.99;-0.72
+//EndModule
+//Node
+ID: 2.1.4.1.1
+Parent: 2.1.4 Internode
+1;43.58;11.03;-0.7
+//EndModule
+//Node
+ID: 2.1.4.1.2
+Parent: 2.1.4.1.1 Internode
+1;42.53;11.06;-0.58
+//EndModule
+//Node
+ID: 2.1.4.1.3
+Parent: 2.1.4.1.2 Internode
+1;40.97;12.07;-0.54
+//EndModule
+//Node
+ID: 2.1.4.1.4
+Parent: 2.1.4.1.3 Internode
+1;39.09;11.29;-1.09
+//EndModule
+//Node
+ID: 2.1.4.1.5
+Parent: 2.1.4.1.4 Internode
+1;37.86;11.39;-1.42
+//EndModule
+//Node
+ID: 2.1.4.1.6
+Parent: 2.1.4.1.5 Internode
+1;36.57;11.28;-1.39
+//EndModule
+//Node
+ID: 2.1.4.1.7
+Parent: 2.1.4.1.6 Internode
+1;36.01;11.2;-1.75
+//EndModule
+//Node
+ID: 2.1.4.1.8
+Parent: 2.1.4.1.7 Internode
+1;35.07;11.42;-2.14
+//EndModule
+//Node
+ID: 2.1.5
+Parent: 2.1.4 Internode
+1;42.99;13.65;-2.31
+//EndModule
+//Node
+ID: 2.1.5.1.1
+Parent: 2.1.5 Internode
+1;42.97;13.67;-2.33
+//EndModule
+//Node
+ID: 2.1.5.1.2
+Parent: 2.1.5.1.1 Internode
+1;42.93;13.54;-2.81
+//EndModule
+//Node
+ID: 2.1.5.1.3
+Parent: 2.1.5.1.2 Internode
+1;44.4;13.98;-5.49
+//EndModule
+//Node
+ID: 2.1.6
+Parent: 2.1.5 Internode
+1;41.79;16.09;-3.69
+//EndModule
+//Node
+ID: 2.1.6.1.1
+Parent: 2.1.6 Internode
+1;41.77;16.15;-3.7
+//EndModule
+//Node
+ID: 2.1.6.1.2
+Parent: 2.1.6.1.1 Internode
+1;44.65;18.32;-3.69
+//EndModule
+//Node
+ID: 2.1.7
+Parent: 2.1.6 Internode
+1;41.06;18.04;-6.98
+//EndModule
+//Node
+ID: 2.1.8
+Parent: 2.1.7 Internode
+1;39.99;19.51;-9.87
+//EndModule
+//Node
+ID: 2.1.9
+Parent: 2.1.8 Internode
+1;39.61;19.18;-12.64
+//EndModule
+//Node
+ID: 2.1.9.1.1
+Parent: 2.1.9 Internode
+1;39.59;19.19;-12.62
+//EndModule
+//Node
+ID: 2.1.9.1.2
+Parent: 2.1.9.1.1 Internode
+1;39.11;18.74;-13.21
+//EndModule
+//Node
+ID: 2.1.10
+Parent: 2.1.9 Internode
+1;39.38;19.85;-17.32
+//EndModule
+//Node
+ID: 2.1.10.1.1
+Parent: 2.1.10 Internode
+1;39.37;19.84;-17.26
+//EndModule
+//Node
+ID: 2.1.10.1.2
+Parent: 2.1.10.1.1 Internode
+1;39.38;20.43;-17.21
+//EndModule
+//Node
+ID: 2.1.11
+Parent: 2.1.10 Internode
+1;38.82;19.61;-21.13
+//EndModule
+//Node
+ID: 2.1.11.1.1
+Parent: 2.1.11 Internode
+1;38.85;19.67;-21.13
+//EndModule
+//Node
+ID: 2.1.11.1.2
+Parent: 2.1.11.1.1 Internode
+1;38.71;18.85;-22.08
+//EndModule
+//Node
+ID: 2.1.12
+Parent: 2.1.11 Internode
+1;38.18;20.68;-25.94
+//EndModule
+//Node
+ID: 2.1.12.1.1
+Parent: 2.1.12 Internode
+1;38.23;20.61;-25.93
+//EndModule
+//Node
+ID: 2.1.12.1.2
+Parent: 2.1.12.1.1 Internode
+1;37.27;21.08;-26.37
+//EndModule
+//Node
+ID: 2.1.12.1.3
+Parent: 2.1.12.1.2 Internode
+1;37.16;21.48;-26.98
+//EndModule
+//Node
+ID: 2.1.13
+Parent: 2.1.12 Internode
+1;37.6;20.34;-31.04
+//EndModule
+//Node
+ID: 2.1.13.1.1
+Parent: 2.1.13 Internode
+1;37.58;20.39;-31.04
+//EndModule
+//Node
+ID: 2.1.13.1.2
+Parent: 2.1.13.1.1 Internode
+1;37.37;19.52;-31.83
+//EndModule
+//Node
+ID: 2.1.13.1.3
+Parent: 2.1.13.1.2 Internode
+1;37.0;19.46;-32.74
+//EndModule
+//Node
+ID: 2.1.13.1.4
+Parent: 2.1.13.1.3 Internode
+1;37.06;19.01;-33.37
+//EndModule
+//Node
+ID: 2.1.14
+Parent: 2.1.13 Internode
+1;36.58;21.3;-34.78
+//EndModule
+//Node
+ID: 2.1.14.1.1
+Parent: 2.1.14 Internode
+1;36.47;21.31;-34.82
+//EndModule
+//Node
+ID: 2.1.14.1.2
+Parent: 2.1.14.1.1 Internode
+1;35.59;21.09;-35.45
+//EndModule
+//Node
+ID: 2.1.14.1.3
+Parent: 2.1.14.1.2 Internode
+1;35.24;21.25;-36.32
+//EndModule
+//Node
+ID: 2.1.15
+Parent: 2.1.14 Internode
+1;36.63;21.12;-38.84
+//EndModule
+//Node
+ID: 2.1.16
+Parent: 2.1.15 Internode
+1;35.81;22.36;-43.55
+//EndModule
+//Node
+ID: 2.1.16.1.1
+Parent: 2.1.16 Internode
+1;35.69;22.22;-43.61
+//EndModule
+//Node
+ID: 2.1.16.1.2
+Parent: 2.1.16.1.1 Internode
+1;35.14;22.34;-43.8
+//EndModule
+//Node
+ID: 2.1.16.1.3
+Parent: 2.1.16.1.2 Internode
+1;35.04;22.81;-44.68
+//EndModule
+//Node
+ID: 2.1.17
+Parent: 2.1.16 Internode
+1;35.78;22.37;-46.69
+//EndModule
+//Node
+ID: 2.1.17.1.1
+Parent: 2.1.17 Internode
+1;35.76;22.45;-46.59
+//EndModule
+//Node
+ID: 2.1.17.1.2
+Parent: 2.1.17.1.1 Internode
+1;35.5;21.79;-47.2
+//EndModule
+//Node
+ID: 2.1.17.1.3
+Parent: 2.1.17.1.2 Internode
+1;36.3;21.1;-48.52
+//EndModule
+//Node
+ID: 2.1.17.1.4
+Parent: 2.1.17.1.3 Internode
+1;36.25;20.5;-49.68
+//EndModule
+//Node
+ID: 2.1.17.1.5
+Parent: 2.1.17.1.4 Internode
+1;37.05;20.19;-50.72
+//EndModule
+//Node
+ID: 2.1.18
+Parent: 2.1.17 Internode
+1;35.02;23.97;-49.28
+//EndModule
+//Node
+ID: 2.1.18.1.1
+Parent: 2.1.18 Internode
+1;34.73;23.78;-49.3
+//EndModule
+//Node
+ID: 2.1.18.1.2
+Parent: 2.1.18.1.1 Internode
+1;34.14;24.26;-49.36
+//EndModule
+//Node
+ID: 2.1.18.1.3
+Parent: 2.1.18.1.2 Internode
+1;34.07;24.61;-50.03
+//EndModule
