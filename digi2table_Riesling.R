@@ -1,7 +1,10 @@
-#setwd("")
+#setwd("/home/agmod5/Nextcloud/git/digi2table")
 
 #TODO #IDValsTable$Sub_0 = leaf = for flistID[5] >> ERROR LEAF wrongly assigned to a Main Node 
-
+# TODO Automaticly convert to CM if Trunk height is too low
+# TODO Add support for more levels of lateral shoots
+# TODO Add support To merge 2 Plants ?
+# TODO Check why organ_N_Unique is necessary for Flowers >> Upated?
 
 ##############################################################################
 # Function: Automatic installation of R-Packages
@@ -39,7 +42,7 @@ usePackage("RColorBrewer")
 flist <- list.files("./20190517/", pattern="^[GKLBDE].*.txt$",full.names=TRUE) 
 
 #Add more folders
- flist <- c(flist,list.files("./20191119/", pattern="^[GKLBDE].*.txt$",full.names=TRUE)) 
+flist <- c(flist,list.files("./20191119/", pattern="^[GKLBDE].*.txt$",full.names=TRUE)) 
 
 ##############################################################################
 
@@ -157,6 +160,48 @@ processFile = function(filepath) {
 
 
 
+##############################################################################
+# Check Files for Consistency
+##############################################################################
+
+f.preCheck <- function(flistID){
+		OK <- TRUE
+		# txt to data.table strings
+		d <- processFile(flistID) 
+
+
+
+		# Mark Leaves and Internodes
+		# Identify lines including the "Digitization ID" 
+		IDLines <- (which(substr(d$f,1,2) == "ID"))		# first 2 letter match == ID
+
+
+
+
+		dIDs <- as.data.table(stri_split_regex(d[IDLines]$f,pattern="[:._]",simplify=TRUE))
+
+		#TODO Wieviel cols kann es haben
+		#Check for Organ at Main Node
+		if(length(grep(dIDs$V3, pattern = "[A-Z]"))>0)
+			{
+				idRow <- grep(dIDs$V3, pattern = "[A-Z]")
+
+				print(paste(flistID,": Problematic ID[s]:", d[IDLines]$f[idRow]))
+				print(paste("in line[s]:", idRow))
+
+
+				OK <- FALSE
+
+			}
+
+			return(OK)
+}
+
+
+flistFilter <- sapply(flist,f.preCheck,simplify=TRUE)
+
+# Remove Failures from processing list
+flist <- flist[which(flistFilter==TRUE)]
 
 ##############################################################################
 # Construct Data table with coordinates and organ typed / levels 
@@ -362,20 +407,8 @@ f.dPlantCoords <- function(flistID){
 	#Merge Data Frames into a single Plant Coords Data Frame
 	dPlantCoords <- rbindlist(lapply(listOfCoordsDF,dynGet),fill=TRUE) #dynGet instead of "get" as it is enclosed in a function and called from a list (i.e. 2 encl. environments)
 
-	# if(sum(!is.na(IDValsTable$subsub.nodeLines))!=0)
-	# {
-	# 	if(length(leafLinesStart)==0){
-	# 	dPlantCoords <- rbindlist(list(main.node.Coords,sub.node.Coords,subsub.node.Coords),fill = TRUE)
-	# 	}else{
-	# 	dPlantCoords <- rbindlist(list(leaf.Coords,flower.Coords,main.node.Coords,sub.node.Coords,subsub.node.Coords),fill = TRUE)
-	# 	}
-	# }else{
-	# 	if(length(leafLinesStart)==0){
-	# 	dPlantCoords <- rbindlist(list(main.node.Coords,sub.node.Coords),fill = TRUE)
-	# 	}else{
-	# 	dPlantCoords <- rbindlist(list(leaf.Coords,flower.Coords,main.node.Coords,sub.node.Coords),fill = TRUE)
-	# 	}
-	# }
+
+
 
 	#Convert To Cm for 1 CASE
 	#"./20180517//E58-03.txt"
