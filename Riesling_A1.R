@@ -7,16 +7,20 @@
 baseCodeFile <- "digi2table_Riesling.R"
 
 # Estimate lines of code to source -- until 'READSOURCEDATABREAK'
-lineN <- as.numeric(system(paste0('grep -n "READSOURCEDATABREAK" ',baseCodeFile,' | grep -o [0-9]*.*[0-9]'),intern=TRUE))
+#lineN <- as.numeric(system(paste0('grep -n "READSOURCEDATABREAK" ',baseCodeFile,' | grep -o [0-9]*.*[0-9]'),intern=TRUE))
+#lineN <- as.numeric(system(paste0('findstr \n "READSOURCEDATABREAK" ',baseCodeFile),intern=TRUE))  #' | grep -o [0-9]*.*[0-9]
+# 
 
-# function to source only n-lines
-source2 <- function(file, start, end, ...) {
-    file.lines <- scan(file, what=character(), skip=start-1, nlines=end-start+1, sep='\n')
-    file.lines.collapsed <- paste(file.lines, collapse='\n')
-    source(textConnection(file.lines.collapsed), ...)
-}
-# Source
-source2(baseCodeFile,1,lineN)
+# # function to source only n-lines
+# source2 <- function(file, start, end, ...) {
+#     file.lines <- scan(file, what=character(), skip=start-1, nlines=end-start+1, sep='\n')
+#     file.lines.collapsed <- paste(file.lines, collapse='\n')
+#     source(textConnection(file.lines.collapsed), ...)
+# }
+# # Source
+# source2(baseCodeFile,1,lineN)
+
+source(baseCodeFile)
 
 ##############################################################################
 # Load additional packages
@@ -44,7 +48,7 @@ AEcol <- c(blues[7],reds[6])
 # Modify Plant list [flust]
 ##############################################################################
 	
-flist <- flist[10:11]
+#flist <- flist[9:10]
 
 
 ##############################################################################
@@ -223,15 +227,18 @@ f.ilSubAll <- function(flistID) {
 	f.ilSub <-  function(grpI) 
 		{
 			#Extract data
-			m <- dPlantCoords[oType=="sub.Node" & Grp==grpI | oType=="subsub.Node" & Grp==grpI][,1:3]
+			m <- dPlantCoords[oType=="sub.Node" & Grp==grpI | oType=="subsub.Node" & Grp==grpI | oType=="subsubsub.Node" & Grp==grpI ][,1:3]
 			#Creat Matrix
 			m <- as.matrix(m)
 			
-			#Check if Sub-Sub-Node
+			#Check if Sub-(Sub)-Node | #wird garnicht weiter verwendet? # todo remove?
 			if(length(grep(grpI,pattern = "_",value = TRUE))!=0) #if subsub.node
 				{
 				 shoot <-  stri_split_regex(grpI,pattern="_",simplify=TRUE)[,1]
-				 subNode <- as.numeric(stri_split_regex(grpI,pattern="_",simplify=TRUE)[,2])
+				 subNode <- as.numeric(stri_split_regex(grpI,pattern="_",simplify=TRUE)[,2]) 
+				 if(ncol(stri_split_regex(grpI,pattern="_",simplify=TRUE))>2){
+				 subsubNode <- as.numeric(stri_split_regex(grpI,pattern="_",simplify=TRUE)[,3])
+				 }				 
 				}
 				
 			if(nrow(m)==1) #Only one point 
@@ -253,7 +260,8 @@ f.ilSubAll <- function(flistID) {
 		}
 
 	# Apply function to All SubNode and SubSubNode IDs
-	dfILSub <- rbindlist(lapply(unique(dPlantCoords[oType=="sub.Node" | oType=="subsub.Node"]$Grp),f.ilSub))
+	# dfILSub <- rbindlist(lapply(unique(dPlantCoords[oType=="sub.Node" | oType=="subsub.Node"]$Grp),f.ilSub))
+		dfILSub <- rbindlist(lapply(unique(dPlantCoords[oType=="sub.Node" | oType=="subsub.Node" | oType=="subsubsub.Node"]$Grp),f.ilSub))
 
 	#Internod-Length on Main Shoot
 	dfILSub.MAINSHOOT <- data.table(	
@@ -278,10 +286,18 @@ f.ilSubAll <- function(flistID) {
 		{
 			#Add Sub-Main
 			dfILSub[,"Sub":=stri_split_regex(Shoot,pattern="_",simplify=TRUE)[,2] ]
-			dfILSub[Sub=="", "Sub":= "0"]
+			dfILSub[Sub=="", "Sub":= "0"] #fill otheres with 0
 
+			if(ncol(stri_split_regex(dfILSub$Shoot,pattern="_",simplify=TRUE))>2)
+			{
+				dfILSub[,"SubSub":=stri_split_regex(Shoot,pattern="_",simplify=TRUE)[,3] ]			
+				dfILSub[SubSub=="", "SubSub":= "0"] #fill otheres with 0
+			}else{
+				dfILSub[,"SubSub":= "0"]
+			}
 		}else{
 			dfILSub[,"Sub":= "0"]
+			dfILSub[,"SubSub":= "0"]
 		}
 
 
@@ -296,14 +312,14 @@ return(dfILSub)
 	#Main = Main Shoot
 	#Sub = Sub Shoot Number at Main Shoot
 
-dfILSubAll <-  rbindlist(lapply(flist,f.ilSubAll))
+dfILSubAll <-  rbindlist(lapply(flist,f.ilSubAll)) #,fill=TRUE
 dfILSubAll <- dfILSubAll[IL!=0]
 
 
-ggplot(dfILSubAll, aes(x=Rank, y=IL,color=Elevated))+
-		geom_point()+
-		facet_grid(Plant~Shoot,labeller = label_both)+
-		scale_colour_manual(values=AEcol)
+# ggplot(dfILSubAll, aes(x=Rank, y=IL,color=Elevated))+
+# 		geom_point()+
+# 		facet_grid(Plant~Shoot,labeller = label_both)+
+# 		scale_colour_manual(values=AEcol)
 
 
 

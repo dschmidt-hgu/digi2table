@@ -1,8 +1,6 @@
 #setwd("/home/agmod5/Nextcloud/git/digi2table")
 
 #TODO #IDValsTable$Sub_0 = leaf = for flistID[5] >> ERROR LEAF wrongly assigned to a Main Node 
-# TODO Automaticly convert to CM if Trunk height is too low
-# TODO Add support for more levels of lateral shoots
 # TODO Add support To merge 2 Plants ?
 # TODO Check why organ_N_Unique is necessary for Flowers >> Upated?
 
@@ -31,6 +29,26 @@ usePackage("stringi")
 usePackage("RColorBrewer")
 
 
+#https://www.r-bloggers.com/identifying-the-os-from-r/
+get_os <- function(){
+  sysinf <- Sys.info()
+  if (!is.null(sysinf)){
+    os <- sysinf['sysname']
+    if (os == 'Darwin')
+      os <- "osx"
+  } else { ## mystery machine
+    os <- .Platform$OS.type
+    if (grepl("^darwin", R.version$os))
+      os <- "osx"
+    if (grepl("linux-gnu", R.version$os))
+      os <- "linux"
+  }
+  tolower(os)
+}
+
+#windows unix or OSX
+setOS <- as.character(get_os())
+
 ##############################################################################
 
 
@@ -54,16 +72,22 @@ flist <- c(flist,list.files("./20191119/", pattern="^[GKLBDE].*.txt$",full.names
 #Exclude  files - if necessary --- [-2,_2,_3]
 ##################################
 excludeflist <- grep(x = flist,pattern="-2.txt")
-excludeflist2 <- grep(x = flist,pattern="_2.txt")
-excludeflist3 <- grep(x = flist,pattern="_3.txt")
+excludeflist <- c(excludeflist,grep(x = flist,pattern="_2.txt"))
+excludeflist <- c(excludeflist,grep(x = flist,pattern="_3.txt"))
+#for Research Project Vinifera
+excludeflist <- c(excludeflist,(1:length(flist))[!is.na(as.numeric(stri_split_regex(flist,pattern="[.]",simplify=TRUE)[,3]))])
 
-if(sum(excludeflist,excludeflist2,excludeflist3)>0)
+
+if(sum(excludeflist)>0)
 	{
 	#remove unnecessary files
-	flist <- flist[-c(excludeflist,excludeflist2,excludeflist3)]
+	flist <- flist[-c(unique(excludeflist))]
 	}else{
 	#do nothing
 	}
+
+
+# flist <- flist[11]
 
 ##########################################################################################################################
 # Triangle Definitions | for Leaves
@@ -134,14 +158,21 @@ uMat <- matrix(c(	0,1,0,0,
 #Function to read a text file into a single column data table
 processFile = function(filepath) {
 
-#get number of lines 	
+
+ #windows
+if(setOS == "windows")
+{
+  linenumber <- as.numeric(stri_split_regex(system(paste0('find /c /v "" ',filepath),intern = TRUE)[2]," ",simplify=TRUE)[,3])
+} else {
+ #linux #should also work on osx
   linenumber <- as.numeric(stri_split_fixed(system(paste0("wc -l ",filepath),intern = TRUE), pattern=" ",simplify=TRUE)[,1])
+}
 #create empty data table with lines mathching line number
   d <- data.table(f=rep("",times=linenumber))
 #Set iterator to 0  
   i=0
 #create "connection to file"  
-  con = file(filepath, "r")
+  con <<- file(filepath, "r")
 # Read file line by line and paste into data.table  
   while ( TRUE ) {
     i=i+1
@@ -225,7 +256,28 @@ f.dPlantCoords <- function(flistID){
 	IDLines <- (which(substr(d$f,1,2) == "ID"))		# first 2 letter match == ID
 
 	#Check Levels of ID for different treatments []
-	if(ncol(stri_split_regex(unlist(d[IDLines]), pattern="[.:_]",simplify=TRUE))>5) #>5 == includes SubSub Level
+	if(ncol(stri_split_regex(unlist(d[IDLines]), pattern="[.:_]",simplify=TRUE))>7) #>57 == includes SubSubSub Level
+	{
+		#Create Data Table of all IDs
+		IDValsTable <- as.data.table(stri_split_regex(unlist(d[IDLines]), pattern="[.:_]", 
+			simplify=TRUE))[,c(2:4,6,8)]
+
+		#Assign Data table colnames
+		colnames(IDValsTable) = c("Main","Sub_0","Sub","SubSub","SubSubSub")	
+
+		# String to numerical values
+		IDValsTable[,"Main":=as.numeric(IDValsTable$Main)]
+		IDValsTable[,"Sub":=as.numeric(IDValsTable$Sub)]
+		IDValsTable[,"Sub_0":=as.numeric(IDValsTable$Sub_0)]
+		IDValsTable[,"SubSub":=as.numeric(IDValsTable$SubSub)]
+		IDValsTable[,"SubSubSub":=as.numeric(IDValsTable$SubSubSub)]
+
+		# Get Type == 1 line above ID
+		IDValsTable[,"Type":=d$f[IDLines-1]]
+		# Save Line Number of Type in data.table
+		IDValsTable[,"Type.Line":=IDLines-1]	
+
+	}else if(ncol(stri_split_regex(unlist(d[IDLines]), pattern="[.:_]",simplify=TRUE))>5) #>5 == includes SubSub Level
 	{
 		#Create Data Table of all IDs
 		IDValsTable <- as.data.table(stri_split_regex(unlist(d[IDLines]), pattern="[.:_]", 
@@ -239,11 +291,14 @@ f.dPlantCoords <- function(flistID){
 		IDValsTable[,"Sub":=as.numeric(IDValsTable$Sub)]
 		IDValsTable[,"Sub_0":=as.numeric(IDValsTable$Sub_0)]
 		IDValsTable[,"SubSub":=as.numeric(IDValsTable$SubSub)]
-
+		IDValsTable[,"SubSubSub":=as.numeric(NA)]
+		
 		# Get Type == 1 line above ID
 		IDValsTable[,"Type":=d$f[IDLines-1]]
 		# Save Line Number of Type in data.table
 		IDValsTable[,"Type.Line":=IDLines-1]	
+	
+
 
 	}else{
 		IDValsTable <- as.data.table(stri_split_regex(unlist(d[IDLines]), pattern="[.:_]", 
@@ -253,6 +308,7 @@ f.dPlantCoords <- function(flistID){
 		IDValsTable[,"Sub":=as.numeric(IDValsTable$Sub)]
 		IDValsTable[,"Sub_0":=as.numeric(IDValsTable$Sub_0)] 
 		IDValsTable[,"SubSub":=as.numeric(NA)]
+		IDValsTable[,"SubSubSub":=as.numeric(NA)]
 		IDValsTable[,"Type":=d$f[IDLines-1]]
 		IDValsTable[,"Type.Line":=IDLines-1]	
 	}
@@ -264,7 +320,9 @@ f.dPlantCoords <- function(flistID){
 #Assign information to "Node"-Lines | where to extract node information | 3 lines after Type Specification
 	IDValsTable[is.na(Sub) & Type=="//Node","main.nodeLines":=   Type.Line + 3]
 	IDValsTable[!is.na(Sub) & is.na(SubSub) & Type=="//Node","sub.nodeLines":=   Type.Line + 3]
-	IDValsTable[!is.na(Sub) & !is.na(SubSub) & Type=="//Node","subsub.nodeLines":=   Type.Line + 3]
+	#<IDValsTable[!is.na(Sub) & !is.na(SubSub)  & Type=="//Node","subsub.nodeLines":=   Type.Line + 3]<
+	IDValsTable[!is.na(Sub) & !is.na(SubSub) & is.na(SubSubSub) & Type=="//Node","subsub.nodeLines":=   Type.Line + 3]
+	IDValsTable[!is.na(Sub) & !is.na(SubSub) & !is.na(SubSubSub) & Type=="//Node","subsubsub.nodeLines":=   Type.Line + 3]
 
 
 	#Identify Leaf Lines [3 lines after "//Leaf]
@@ -335,6 +393,19 @@ f.dPlantCoords <- function(flistID){
 		}
 
 
+		#SubSubSub Stems
+		if(sum(!is.na(IDValsTable$subsubsub.nodeLines))!=0) #check if subsubsub exists
+		{
+		subsubsub.node.Coords <- as.data.table(stri_split_fixed(d$f[na.omit(IDValsTable$subsubsub.nodeLines)], pattern=";", simplify=TRUE)[,2:4])
+		colnames(subsubsub.node.Coords) <- c("x","y","z")
+		subsubsub.node.Coords[,"x":= as.numeric(x)]
+		subsubsub.node.Coords[,"y":= as.numeric(y)]
+		subsubsub.node.Coords[,"z":= as.numeric(z)]		
+		subsubsub.node.Coords[,"Grp" := paste0(IDValsTable[!is.na(subsubsub.nodeLines)]$Main,"_",IDValsTable[!is.na(subsubsub.nodeLines)]$Sub,"_",IDValsTable[!is.na(subsubsub.nodeLines)]$SubSub)] #Grp = Main_Sub == parent Sub
+		}
+
+
+
 	#Leaf Coordinates
 	if(length(leafLinesStart)>0) #only if leaves are present
 	{
@@ -393,13 +464,14 @@ f.dPlantCoords <- function(flistID){
 	main.node.Coords[,"oType":="main.Node"]
 	sub.node.Coords[,"oType":="sub.Node"]
 	if(exists("subsub.node.Coords")) {	subsub.node.Coords[,"oType":="subsub.Node"] }
+	if(exists("subsubsub.node.Coords")) {	subsubsub.node.Coords[,"oType":="subsubsub.Node"] }
 	if(exists("leaf.Coords")){			leaf.Coords[,"oType":="Leaf"] }
 	if(exists("flower.Coords")){		flower.Coords[,"oType":="Flower"] }
 
 	#Get list of existing Coords Data Frame
 	#rm(dPlantCoords)
 	#rm(listOfCoordsDF)
-	listOfCoordsDF <- as.list(ls()[grep(ls(),pattern=".Coords")])
+	listOfCoordsDF <- as.list(ls()[grep(ls(),pattern="\\.Coords")])
 
 
 
@@ -411,11 +483,23 @@ f.dPlantCoords <- function(flistID){
 
 
 	#Convert To Cm for 1 CASE
-	#"./20180517//E58-03.txt"
-	if(flistID == "./20180517//E58-03.txt")
-	{
-	dPlantCoords[,1:3] <- dPlantCoords[,1:3]*2.54
-	}
+	# #"./20180517//E58-03.txt"
+	# if(flistID == "./20180517//E58-03.txt")
+	# {
+	# dPlantCoords[,1:3] <- dPlantCoords[,1:3]*2.54
+	# }
+# If Trunk Height below "40" > convert to cm
+	if(abs(dPlantCoords[Order==0]$z) < 40 )
+		{
+
+		 dPlantCoords[,1:3] <- dPlantCoords[,1:3]*2.54
+
+		}
+
+	
+
+
+
 
 
 
@@ -483,8 +567,8 @@ f.dPlantCoords <- function(flistID){
 	if(stri_split_regex(flistID,pattern="[/.]",simplify=TRUE)[,5] %in% c( "L88-01", "E58-03" ))
 	{
 		#cat("L88/E58-flip \n")
-		dPlantCoords$x = dPlantCoords$x*-1
-		dPlantCoords$y = dPlantCoords$y*-1
+		dPlantCoords[,"x":= x*-1]
+		dPlantCoords[,"y":= y*-1]
 	}
 	#######################################################################################
 
@@ -496,7 +580,7 @@ f.dPlantCoords <- function(flistID){
 	#LM Fit
 
 	#Transformation of Coordinates
-	xyz.trans <- as.data.table(t(t(as.matrix(dPlantCoords[,1:3]))-as.numeric(dPlantCoords[Order==1][,1:3])))
+	xyz.trans <- as.data.table(t(t(as.matrix(dPlantCoords[,1:3]))-	as.numeric(dPlantCoords[Order==1][,1:3])))
 
 	#Rename Columns #CHANGED x + y to Rotate 90 Degrees
 	colnames(xyz.trans) <- c("y.n","x.n","z.n") 
@@ -580,7 +664,7 @@ f.dPlantCoords <- function(flistID){
 #Remove problematic FILE
 #flist <- flist[-5]
 
-allPlant <- rbindlist(lapply(flist,f.dPlantCoords),fill=TRUE)
+#allPlant <- rbindlist(lapply(flist,f.dPlantCoords),fill=TRUE)
 #allPlant <- rbindlist(lapply(flist[7:11],f.dPlantCoords),fill=TRUE)
 
 
@@ -603,6 +687,7 @@ flower.Coords <- dPlantCoords[oType=="Flower"]
 main.node.Coords <- dPlantCoords[oType=="main.Node"]
 sub.node.Coords <- dPlantCoords[oType=="sub.Node"]
 subsub.node.Coords <- dPlantCoords[oType=="subsub.Node"]
+subsubsub.node.Coords <- dPlantCoords[oType=="subsubsub.Node"]
 
 
 
@@ -777,6 +862,20 @@ if(nrow(subsub.node.Coords)>0)
 	
 	segments3d(rbindlist(lapply(unique(subsub.node.Coords$Grp),subsub.node.Coords.2seg)),lwd=3,col="#7f2704",add=TRUE)
 	}
+
+
+# SubSubSub
+if(nrow(subsubsub.node.Coords)>0)
+	{
+	subsubsub.node.Coords.2seg <- function(i) {
+												nrowX <- nrow(subsubsub.node.Coords[Grp==i,1:3])-1
+												return(subsubsub.node.Coords[Grp==i,1:3][c(1,rep(2:nrowX,each=2),nrowX+1)])
+											}	
+	
+	segments3d(rbindlist(lapply(unique(subsubsub.node.Coords$Grp),subsubsub.node.Coords.2seg)),lwd=3,col="#7f2704",add=TRUE)
+	}
+
+
 
 
 ###############################################

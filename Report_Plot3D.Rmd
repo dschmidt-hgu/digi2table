@@ -20,16 +20,19 @@ knitr::opts_chunk$set(echo = TRUE)
 baseCodeFile <- "digi2table_Riesling.R"
 
 # Estimate lines of code to source -- until 'SOURCEBREAK'
-lineN <- as.numeric(system(paste0('grep -n "SOURCEBREAK" ',baseCodeFile,' | grep -o [0-9]*.*[0-9]'),intern=TRUE))
+#lineN <- as.numeric(system(paste0('grep -n "SOURCEBREAK" ',baseCodeFile,' | grep -o [0-9]*.*[0-9]'),intern=TRUE))
 
-# function to source only n-lines
-source2 <- function(file, start, end, ...) {
-    file.lines <- scan(file, what=character(), skip=start-1, nlines=end-start+1, sep='\n')
-    file.lines.collapsed <- paste(file.lines, collapse='\n')
-    source(textConnection(file.lines.collapsed), ...)
-}
-# Source
-source2(baseCodeFile,1,lineN)
+# # function to source only n-lines
+# source2 <- function(file, start, end, ...) {
+#     file.lines <- scan(file, what=character(), skip=start-1, nlines=end-start+1, sep='\n')
+#     file.lines.collapsed <- paste(file.lines, collapse='\n')
+#     source(textConnection(file.lines.collapsed), ...)
+# }
+# # Source
+# source2(baseCodeFile,1,lineN)
+
+
+source(baseCodeFile)
 
 # Load additonal Packages
 # usePackage("data.table")
