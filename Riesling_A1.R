@@ -391,7 +391,8 @@ f.LforA <- function(flistID)
 	pts <- dtpts$N 
 
 	#Create PointID sequence
-	ptsSeq <- unlist(lapply(pts, function(i) {c(0:(pts[i]-1))}))
+	#ptsSeq <- unlist(lapply(pts, function(i) {c(0:(pts[i]-1))}))
+	 ptsSeq <- unlist(lapply(pts, function(i) {c(0:(i-1))}))
 
 	#Assign to data frame
 	dL[,"point":= ptsSeq]
