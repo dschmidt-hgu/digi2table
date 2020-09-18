@@ -418,7 +418,7 @@ f.dPlantCoords <- function(flistID){
 		leaf.Coords[,"z":=as.numeric(z)]
 
 		#Create unique Organ Identifier [for grouping of coordinates]
-		leaf.Coords[,"organ_N":= rep(paste0("Leaf_",IDValsTable[Type=="//Leaf"]$Main,"_",IDValsTable[Type=="//Leaf"]$Sub,"_",IDValsTable[Type=="//Leaf"]$SubSub),dfL$p)] #Repeat Id x Number of Points
+		leaf.Coords[,"organ_N":= rep(paste0("Leaf_",IDValsTable[Type=="//Leaf"]$Main,"_",IDValsTable[Type=="//Leaf"]$Sub,"_",IDValsTable[Type=="//Leaf"]$SubSub,"_",IDValsTable[Type=="//Leaf"]$SubSubSub),dfL$p)] #Repeat Id x Number of Points
 		
 	}
  
