@@ -442,18 +442,25 @@ f.dPlantCoords <- function(flistID){
 			dfF$p <-  (dfF$fE - dfF$fS)+1
 
 			# Split into tendril and flower by nPoints
-			dfTendril <- dfF[p==2]
+			if(nrow(dfF[p==2])>0)
+				{
+				dfTendril <- dfF[p==2]
+				tendrilLines <- rbindlist(lapply(1:nrow(dfTendril), function(x) {data.table(c((dfTendril$fS[x]:dfTendril$fE[x])))}))$V1
+				}
+
 			dfF 	  <- dfF[p==3]
 
 			#Create vector of all lines 
 			flowerLines <- rbindlist(lapply(1:nrow(dfF), function(x) {data.table(c((dfF$fS[x]:dfF$fE[x])))}))$V1
-			tendrilLines <- rbindlist(lapply(1:nrow(dfTendril), function(x) {data.table(c((dfTendril$fS[x]:dfTendril$fE[x])))}))$V1
+			
 			
 			}
 
+			if(exists("dfTendril"))
+			{
 			# Overwrite information in IDValstable - add Tendril
 			IDValsTable[Type.Line%in%c(dfTendril$fS-3), "Type":="//Tendril"]
-
+			}
 
 
 			# Get Flower coordinates
@@ -487,6 +494,8 @@ f.dPlantCoords <- function(flistID){
 			}
 
 			#Tendrils
+			if(exists("tendrilLines"))
+			{
 			tendrilLines <- tendrilLines[order(tendrilLines)]
 
 			tendril.Coords <- as.data.table(stri_split_fixed(d$f[tendrilLines], pattern=";", simplify=TRUE)[,2:4])
@@ -496,7 +505,7 @@ f.dPlantCoords <- function(flistID){
 			tendril.Coords$z <- as.numeric(tendril.Coords$z)
 			tendril.Coords[,"organ_N":= rep(paste0("Tendril_",IDValsTable[Type=="//Tendril"]$Main,"_",IDValsTable[Type=="//Tendril"]$Sub,"_",IDValsTable[Type=="//Tendril"]$SubSub),each=2)]
 			tendril.Coords[,"organ_N_unique":=organ_N]
-
+			}
 
 
 		}
